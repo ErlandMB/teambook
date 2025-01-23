@@ -14,7 +14,7 @@ struct DSU {
 	
 	int find(int x) {
 		while (x != f[x]) {
-		x = f[x] = f[f[x]];
+			x = f[x] = f[f[x]];
 		}
 		return x;
 	}
@@ -27,7 +27,7 @@ struct DSU {
 		x = find(x);
 		y = find(y);
 		if (x == y) {
-		return false;
+			return false;
 		}
 		siz[x] += siz[y];
 		f[y] = x;
