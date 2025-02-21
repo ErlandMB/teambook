@@ -1,3 +1,4 @@
+const int MAXN = int(1e9);
 std::vector <int> prime;
 bool is_composite[MAXN];
 
