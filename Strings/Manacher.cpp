@@ -5,11 +5,10 @@
 //  	* and between every consecutive pair
 //  * Verification: http://www.spoj.com/problems/MSUBSTR/
 
-string S;
-S.pb('#');
-forn (i, sz(s)) {
-    S.pb(s[i]);
-    S.pb('#');
+// add '#' for even palindromes
+string S; S.pb('$');
+fore (i, l, r + 1) {
+    S += s[i] + string("$");
 }
 
 // Manacher algorithm
