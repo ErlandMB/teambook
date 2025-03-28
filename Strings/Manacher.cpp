@@ -24,3 +24,4 @@ vector<int> manacher(const string &s) {
     }
     return R;
 }
+ 
