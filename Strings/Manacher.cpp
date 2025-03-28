@@ -1,4 +1,10 @@
-// Manacher's Algorithm - Finding all sub-palindromes in O(n)
+// Manacher's Algorithm
+// Source: https://snuke.hatenablog.com/entry/2014/12/02/235837
+//  * Time: O(N)
+//  * Description: length of largest palindrome centered at each character of string
+//  	* and between every consecutive pair
+//  * Verification: http://www.spoj.com/problems/MSUBSTR/
+
 string S;
 S.pb('#');
 forn (i, sz(s)) {
