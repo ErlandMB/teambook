@@ -7,8 +7,8 @@
 
 // add '#' for even palindromes
 string S; S.pb('$');
-fore (i, l, r + 1) {
-    S += s[i] + string("$");
+for (auto &x : s) {
+    S += x + string("$");
 }
 
 // Manacher algorithm
