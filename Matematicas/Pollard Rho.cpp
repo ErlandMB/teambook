@@ -1,5 +1,7 @@
+
 using u64 = uint64_t;
 using u128 = __uint128_t;
+using ll = long long;
 
 u64 binpower(u64 base, u64 e, u64 mod) {
     u64 result = 1;
@@ -112,17 +114,4 @@ ll NumDiv(ll n) {
         total *= (e + 1);
     }
     return total;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int t;
-    cin >> t;
-    while (t--) {
-        ll n;
-        cin >> n;
-        cout << SumOfDivisors(n) - n << '\n';   // suma divisores propios
-        // cout << NumberOfDivisors(n) << '\n';  // si quieres imprimir número divisores
-    }
 }
