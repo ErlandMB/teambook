@@ -68,7 +68,7 @@ ll pollard(ll n) {
         while (d == 1) {
             x = f(x);
             y = f(f(y));
-            d = gcd(abs(x - y), n);
+            d = __gcd(abs(x - y), n);
         }
         if (d > 1 && d < n) return d;
     }
