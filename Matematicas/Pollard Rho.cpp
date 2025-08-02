@@ -1,42 +1,59 @@
-#include <bits/stdc++.h>
-using namespace std;
+using u64 = uint64_t;
+using u128 = __uint128_t;
 
-using ll = long long;
-using ull = unsigned long long;
-
-ll mul(ll a, ll b, ll mod) {
-    return (__int128)a * b % mod;
+u64 binpower(u64 base, u64 e, u64 mod) {
+    u64 result = 1;
+    base %= mod;
+    while (e) {
+        if (e & 1)
+            result = (u128)result * base % mod;
+        base = (u128)base * base % mod;
+        e >>= 1;
+    }
+    return result;
 }
 
-ll powmod(ll a, ll b, ll mod) {
-    ll res = 1 % mod;
-    while (b > 0) {
-        if (b & 1) res = mul(res, a, mod);
-        a = mul(a, a, mod);
-        b >>= 1;
-    }
-    return res;
-}
-
-bool miller_rabin(ll n) {
-    if (n < 2) return false;
-    for (ll p : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}) {
-        if (n % p == 0) return n == p;
-    }
-    ll r = 0, d = n - 1;
-    while ((d & 1) == 0) d >>= 1, ++r;
-    for (ll a : {2, 3, 5, 7, 11}) {
-        if (a >= n) break;
-        ll x = powmod(a, d, n);
-        if (x == 1 || x == n - 1) continue;
-        bool ok = false;
-        for (int i = 0; i < r - 1; i++) {
-            x = mul(x, x, n);
-            if (x == n - 1) ok = true;
-        }
-        if (!ok) return false;
+bool check_composite(u64 n, u64 a, u64 d, int s) {
+    u64 x = binpower(a, d, n);
+    if (x == 1 || x == n - 1)
+        return false;
+    for (int r = 1; r < s; r++) {
+        x = (u128)x * x % n;
+        if (x == n - 1)
+            return false;
     }
     return true;
+}
+
+bool MillerRabin(u64 n) { // returns true if n is prime, else false
+    if (n < 2)
+        return false;
+    int r = 0;
+    u64 d = n - 1;
+    while ((d & 1) == 0) {
+        d >>= 1;
+        r++;
+    }
+    for (int a : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}) {
+        if (n == a)
+            return true;
+        if (check_composite(n, a, d, r))
+            return false;
+    }
+    return true;
+}
+
+ll gcd(ll a, ll b) {
+    while (b) {
+        ll t = b;
+        b = a % b;
+        a = t;
+    }
+    return a;
+}
+
+ll mul(ll a, ll b, ll mod) {
+    return (u128)a * b % mod;
 }
 
 ll rho(ll n, ll x0 = 2, ll c = 1) {
@@ -52,7 +69,7 @@ ll rho(ll n, ll x0 = 2, ll c = 1) {
 
 ll pollard(ll n) {
     if (n % 2 == 0) return 2;
-    if (miller_rabin(n)) return n;
+    if (MillerRabin(n)) return n;
     while (true) {
         ll x = rand() % (n - 2) + 2;
         ll c = rand() % (n - 1) + 1;
@@ -61,22 +78,22 @@ ll pollard(ll n) {
     }
 }
 
-void factorize(ll n, map<ll, int>& factors) {
+void factorize(ll n, map<ll, int> &factors) {
     if (n == 1) return;
-    if (miller_rabin(n)) {
+    if (MillerRabin(n)) {
         factors[n]++;
         return;
     }
-    ll f = pollard(n);
-    factorize(f, factors);
-    factorize(n / f, factors);
+    ll d = pollard(n);
+    factorize(d, factors);
+    factorize(n / d, factors);
 }
-
-ll SumOfDivisors(ll n) {
+//suma de divisores
+ll SumDiv(ll n) {
     map<ll, int> pf;
     factorize(n, pf);
     ll total = 1;
-    for (auto [p, e] : pf) {
+    for (auto &[p, e] : pf) {
         ll term = 1, power = 1;
         for (int i = 0; i < e; i++) {
             power *= p;
@@ -86,26 +103,26 @@ ll SumOfDivisors(ll n) {
     }
     return total;
 }
-
-ll NumberOfDivisors(ll n) {
+//numero de divisores
+ll NumDiv(ll n) {
     map<ll, int> pf;
     factorize(n, pf);
     ll total = 1;
-    for (auto [_, e] : pf) {
+    for (auto &[_, e] : pf) {
         total *= (e + 1);
     }
     return total;
 }
 
 int main() {
-    ios::sync_with_stdio(0); cin.tie(0);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
     int t;
     cin >> t;
     while (t--) {
         ll n;
         cin >> n;
-        cout << "Proper divisor sum: " << SumOfDivisors(n) - n << '\n';
-        cout << "Total number of divisors: " << NumberOfDivisors(n) << '\n';
+        cout << SumOfDivisors(n) - n << '\n';   // suma divisores propios
+        // cout << NumberOfDivisors(n) << '\n';  // si quieres imprimir número divisores
     }
-    return 0;
 }
