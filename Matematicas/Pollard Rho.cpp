@@ -1,3 +1,135 @@
+//long long type hasta 18 digitos
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll   = long long;
+using u64  = uint64_t;
+using u128 = __uint128_t;
+
+// fast modular multiplication  
+inline u64 mod_mul(u64 a, u64 b, u64 m) {
+    return (u128)a * b % m;
+}
+
+// fast modular exponentiation
+u64 mod_pow(u64 a, u64 e, u64 m) {
+    u64 res = 1;
+    a %= m;
+    while (e) {
+        if (e & 1) res = mod_mul(res, a, m);
+        a = mod_mul(a, a, m);
+        e >>= 1;
+    }
+    return res;
+}
+
+// deterministic Miller–Rabin for 64-bit
+bool isPrime(u64 n) {
+    if (n < 2) return false;
+    for (u64 p : {2ULL,3ULL,5ULL,7ULL,11ULL,13ULL,17ULL,19ULL,23ULL,29ULL,31ULL,37ULL}) {
+        if (n % p == 0) return n == p;
+    }
+    u64 d = n - 1;
+    int s = 0;
+    while ((d & 1) == 0) {
+        d >>= 1;
+        s++;
+    }
+    for (u64 a : {2ULL, 325ULL, 9375ULL, 28178ULL, 450775ULL, 9780504ULL, 1795265022ULL}) {
+        if (a % n == 0) continue;
+        u64 x = mod_pow(a, d, n);
+        if (x == 1 || x == n - 1) continue;
+        bool comp = true;
+        for (int r = 1; r < s; r++) {
+            x = mod_mul(x, x, n);
+            if (x == n - 1) {
+                comp = false;
+                break;
+            }
+        }
+        if (comp) return false;
+    }
+    return true;
+}
+
+// Pollard's Rho
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+ll pollard(ll n) {
+    if (n % 2 == 0) return 2;
+    if (n % 3 == 0) return 3;
+    uniform_int_distribution<ll> distX(2, n-2);
+    uniform_int_distribution<ll> distC(1, n-1);
+    while (true) {
+        ll x = distX(rng), y = x;
+        ll c = distC(rng), d = 1;
+        auto f = [&](ll v){ return (mod_mul(v,v,n) + c) % n; };
+        while (d == 1) {
+            x = f(x);
+            y = f(f(y));
+            d = gcd(abs(x - y), n);
+        }
+        if (d > 1 && d < n) return d;
+    }
+}
+
+// recursive factorization into map
+void factorize(ll n, map<ll,int> &fac) {
+    if (n <= 1) return;
+    if (isPrime(n)) {
+        fac[n]++;
+    } else {
+        ll d = pollard(n);
+        factorize(d, fac);
+        factorize(n/d, fac);
+    }
+}
+
+// number of divisors
+ll numOfDiv(ll n) {
+    map<ll,int> fac;
+    factorize(n, fac);
+    ll cnt = 1;
+    for (auto &pr : fac) cnt *= (pr.second + 1);
+    return cnt;
+}
+
+// sum of divisors
+ll sumOfDiv(ll n) {
+    map<ll,int> fac;
+    factorize(n, fac);
+    ll total = 1;
+    for (auto &pr : fac) {
+        ll p = pr.first;
+        int e = pr.second;
+        ll term = 1, cur = 1;
+        for (int i = 0; i < e; i++) {
+            cur *= p;
+            term += cur;
+        }
+        total *= term;
+    }
+    return total;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+    while (t--) {
+        ll n;
+        cin >> n;
+        // mostrar sólo sumatorio de divisores:
+        cout << sumOfDiv(n) << "\n";
+        // si quieres también número de divisores, usa:
+        // cout << numOfDiv(n) << "\n";
+    }
+    return 0;
+}
+
+
+// hasta 20 digitos
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -92,25 +224,26 @@ void factor(i128 n, map<i128,int> &fac) {
     }
 }
 
-// Compute number of divisors from a prime factor map
-i128 numOfDiv(const map<i128,int> &fac) {
+// Compute number of divisors by factoring n directly
+i128 numOfDiv(i128 n) {
+    map<i128,int> fac;
+    factor(n, fac);
     i128 cnt = 1;
-    for (auto &pr : fac) {
-        cnt *= (pr.second + 1);
-    }
+    for (auto &pr : fac) cnt *= (pr.second + 1);
     return cnt;
 }
 
-// Compute sum of divisors from a prime factor map
-i128 sumOfDiv(const map<i128,int> &fac) {
+// Compute sum of divisors by factoring n directly
+i128 sumOfDiv(i128 n) {
+    map<i128,int> fac;
+    factor(n, fac);
     i128 total = 1;
     for (auto &pr : fac) {
         i128 p = pr.first;
         int e = pr.second;
-        // geometric series 1 + p + p^2 + ... + p^e
         i128 term = 1, cur = 1;
         for (int i = 0; i < e; i++) {
-            cur = cur * p;
+            cur *= p;
             term += cur;
         }
         total *= term;
@@ -167,3 +300,4 @@ int main(){
 
     return 0;
 }
+
