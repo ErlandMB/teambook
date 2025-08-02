@@ -11,6 +11,8 @@ inline u64 mod_mul(u64 a, u64 b, u64 m) {
     return (u128)a * b % m;
 }
 
+ll gcd(ll a, ll b) { if (b == 0) return a; return gcd(b, a % b);}
+
 // fast modular exponentiation
 u64 mod_pow(u64 a, u64 e, u64 m) {
     u64 res = 1;
