@@ -1,4 +1,4 @@
-// MST for Sparse graphs (grafos densos) n ^ 2 aristas
+// MST for Sparse graphs (grafos densos) up to n ^ 2 aristas
 const int INF = 1000000000;
 
 struct Edge {
