@@ -2,8 +2,8 @@
 
 // Floyd-Warshall algorithm
 
-// vvl min_dist(n, vl(n, INF));
-//forn (i, n) min_dist[i][i] = 0;
+vvl min_dist(n, vl(n, INF));
+forn (i, n) min_dist[i][i] = 0;
 // forn (i, m) {
 //         ll u, v, w; cin >> u >> v >> w;
 //         u--, v--;
