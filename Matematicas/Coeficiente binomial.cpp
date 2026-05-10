@@ -4,7 +4,7 @@ ll invmod(ll a){ return expmod(a, MOD - 2); }
 
 const int max_n = int(2e5) + 1;
 
-vll fac(max_n), fac_inv(max_n);
+vl fac(max_n), fac_inv(max_n);
 int nck(int n, int k) {
     	return k < 0 ? 0 : n < 0 ? 0 : k > n ? 0 : fac[n] * fac_inv[k] % MOD * fac_inv[n - k] % MOD;
 };
