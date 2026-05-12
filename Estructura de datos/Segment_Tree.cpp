@@ -1,39 +1,37 @@
+
 struct SegTree {
     int n;
-    vector<long long> st;
-
-    SegTree(int _n) {
-        n = 1;
-        while (n < _n) n <<= 1;
-        st.assign(2 * n, 0);
+    vector<ll> st;
+    SegTree(int sz) {
+        n=sz;
+        st.assign(4*n, 0);
     }
-    void build(vector<int>& a) {
-        for (int i = 0; i < (int)a.size(); i++)
-            st[n + i] = a[i];
-
-        for (int i = n - 1; i >= 1; i--)
-            st[i] = st[i << 1] + st[i << 1 | 1];
-    }
-    // point update: a[pos] = val
-    void update(int pos, long long val) {
-        pos += n;
-        st[pos] = val;
-
-        for (pos >>= 1; pos; pos >>= 1)
-            st[pos] = st[pos << 1] + st[pos << 1 | 1];
-    }
-    // query sum on [l, r]
-    long long query(int l, int r) {
-        long long res = 0;
-        l += n;
-        r += n;
-        while (l <= r) {
-            if (l & 1) res += st[l++];
-            if (!(r & 1)) res += st[r--];
-
-            l >>= 1;
-            r >>= 1;
+    void build(int v, int l, int r, vector<ll>& a, bool op) {
+        if (l==r) {
+            st[v]=a[l];
+            return;
         }
-        return res;
+        int m=(l+r)/2;
+        build(v*2+1, l, m, a, !op);
+        build(v*2+2, m+1, r, a, !op);
+        if(op)
+            st[v]=st[v*2+1]|st[v*2+2];
+        else
+            st[v]=st[v*2+1]^st[v*2+2];
+    }
+    void update(int v, int l, int r, int pos, int val, bool op) {
+        if (l==r) {
+            st[v]=val;
+            return;
+        }
+        int m=(l+r)/2;
+        if(pos<= m)
+            update(v*2+1, l, m, pos, val, !op);
+        else
+            update(v*2+2, m+1, r, pos, val, !op);
+        if(op)
+            st[v]=st[v*2+1]|st[v*2+2];
+        else
+            st[v]=st[v*2+1]^st[v*2+2];
     }
 };
