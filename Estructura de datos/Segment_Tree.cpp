@@ -1,4 +1,3 @@
-
 struct SegTree {
     int n;
     vector<ll> st;
