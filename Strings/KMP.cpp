@@ -1,5 +1,5 @@
 //Knuth-Morris-Pratt
-
+//pi[i] = guarda el mejor borde de cada prefijo
 vector<ll> pi(const string &s) {
 	  ll n=sz(s);
     vl pi_s(n);
