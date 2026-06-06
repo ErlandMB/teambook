@@ -1,5 +1,5 @@
 //El vector z[i]=cuantos caracteres coinciden entre s[0...] y s[i...]
-//es decir cuanto se parece cada posicion al inicio de la cadena
+//Es decir cuanto se parece cada subcadena empezando en posicion i al inicio de la cadena
 vector<ll> z_function(const string &s){
   	vector<ll> z(s.size());
   	z[0]=s.size();
